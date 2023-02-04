@@ -14,6 +14,7 @@ and registers their interests.
 # TOC
 1. Class Diagram
 1. Sequence Diagram
+1. Code
 1. Installation
 1. Example
 
@@ -42,6 +43,10 @@ agent of the same type).
 
 After a mutual interest is shown between a Worker and a Business,
 the Broker will notify both ends for the new contract.
+
+# Code
+Following there are reported some snippets of the code,
+analyzing the most interesting parts.
 
 
 # Installation
