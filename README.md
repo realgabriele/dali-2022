@@ -1,16 +1,8 @@
 # DALI project
 ## by Gabriele Tagliente, matr. 279677
 
-# TOC
-1. Specification
-    1. Agents Types
-1. Class Diagram
-1. Sequence Diagram
-1. Installation
-1. Example
+---
 
-# Specification
-## Idea
 The general idea for this project is to implement the job seeking proceess.  
 In this model, Businesses offer job positions,
 while Workers offer their work.  
@@ -18,8 +10,12 @@ This is done with the help of a Broker (agenzia iterinale),
 which notifies Workers/Busenesses for new job/work,
 and registers their interests.
 
-## Agent Types
 
+# TOC
+1. Class Diagram
+1. Sequence Diagram
+1. Installation
+1. Example
 
 
 # Class Diagram
@@ -34,6 +30,7 @@ All the businesses are extensions of this general class.
 In the end takes care of making new job contracts.  
 _Workers_ and _Businesses_ only talk via the _Broker_
 
+
 # Sequence Diagram
 ![Sequence Diagram Image](Images/sequence_diagram.drawio.png)
 
@@ -46,10 +43,11 @@ agent of the same type).
 After a mutual interest is shown between a Worker and a Business,
 the Broker will notify both ends for the new contract.
 
+
 # Installation
 Installation instructions:
 no particular information is required in order to install this project,
-apart from the normal [DALI](https://github.com/AAAI-DISIM-UnivAQ/DALI) instalation instructions.
+apart from the normal [DALI](https://github.com/AAAI-DISIM-UnivAQ/DALI) installation instructions.
 
 The project has been implemented and executed on a Linux OS.
 
@@ -77,6 +75,7 @@ press any key on the original terminal.
 * After a single execution,
 it is needed to wait for 60 seconds
 before restart another round.
+
 
 # Example
 Following some screenshot showing an example of execution.
