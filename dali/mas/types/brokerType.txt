@@ -1,0 +1,51 @@
+:- dynamic type/2.
+:- dynamic interest/2.
+
+all_agents(Type,Input,Input) :- \+ (type(Ag,Type), \+ memberchk(Ag,Input)).
+all_agents(Type,Input,Output) :- type(Ag,Type), \+ memberchk(Ag,Input), !, all_agents(Type,[Ag|Input],Output).
+
+/* ----- */
+
+type(worker1,worker).
+type(worker2,worker).
+type(business1,business).
+type(business2,business).
+
+/* === Events === */
+
+subscribeE(Agent,Type) :> assert(type(Agent,Type)),
+	write(Agent), write(' is '), write(Type), nl.
+
+interestE(From,To) :> assert(interest(From,To)),
+	write(From), write(' -> '), write(To), nl.
+
+job_offerE(Business, Pay) :> message_workersA(Business, Pay).
+work_offerE(Worker, Exp) :> message_businessesA(Worker, Exp).
+
+
+/* === Actions === */
+
+message_businessesA(Worker,Exp) :> all_agents(business,[],Businesses), message_workA(Businesses,Worker,Exp).
+message_workersA(Business,Pay) :> all_agents(worker,[],Workers), message_jobA(Workers,Business,Pay).
+
+message_jobA([],X,Y).
+message_jobA([E|L],Business,Pay) :>
+	messageA(E,send_message(job_available(Business, Pay),Me)),
+	message_jobA(L,Business,Pay).
+
+message_workA([],X,Y).
+message_workA([E|L],Worker,Exp) :>
+	messageA(E,send_message(work_available(Worker, Exp),Me)),
+	message_workA(L,Worker,Exp).
+
+
+/* === Proactions === */
+
+match(A,B) :- interest(A,B), interest(B,A), type(A,worker), type(B,business).
+matchI(A,B) :> write(A), write(' now works with '), write(B), nl,
+	messageA(A, send_message(new_contract(B),Me)), messageA(B, send_message(new_contract(A),Me)),
+	retract(interest(A,B)), retract(interest(B,A)).
+
+
+
+

@@ -1,0 +1,25 @@
+:- dynamic employee/1.
+
+/* ----- */
+
+payment(2500).
+min_experience(10).
+
+/* ----- */
+
+startE:> messageA(broker,send_message(subscribe(Me,business),Me)).
+goE :> payment(X), messageA(broker, send_message(job_offer(Me, X),Me)).
+
+/* === Events === */
+
+work_availableE(Worker, Exp) :> worker_interestA(Worker, Exp).
+
+new_contractE(Worker) :> write('I hired '), write(Worker), assert(employee(Worker)).
+
+/* === Actions === */
+
+worker_interest(Worker, Exp) :< min_experience(X), X =< Exp.
+worker_interestI(Worker, Exp) :> messageA(broker,send_message(interest(Me, Worker),Me)).
+
+
+
