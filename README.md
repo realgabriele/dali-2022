@@ -48,6 +48,85 @@ the Broker will notify both ends for the new contract.
 Following there are reported some snippets of the code,
 analyzing the most interesting parts.
 
+## Subscribe
+On startup, each agent will subscribe to the *Broker*,
+indicating the group the are part of (*Business* or *Worker*).
+
+On the *Broker* side, this is the code that handles the request:
+```prolog
+:- dynamic type/2.
+
+subscribeE(Agent,Type) :> assert(type(Agent,Type)).
+```
+Allowing a dynamic fact, we can assert new types
+and store them in the Knowledge Base.
+
+## Offer
+When the agents receive the `go` event,
+they will make an offer to the *Broker*.
+```prolog
+experience(5).
+
+goE :> experience(X), messageA(broker, send_message(work_offer(Me, X),Me)).
+```
+This is made consulting dynamically the knowledge base
+and presenting their offer (either in pay or experience)
+
+On the other hand, the *Broker* will receive the offer
+and broadcast it to all the agents of the other type.  
+Thanks to the previous `type` statement,
+it is now possible to send a message to all agents
+of the same type:
+```prolog
+% Create list of agents of type Type
+all_agents(Type,Input,Input) :- \+ (type(Ag,Type), \+ memberchk(Ag,Input)).
+all_agents(Type,Input,Output) :- type(Ag,Type), \+ memberchk(Ag,Input), !, all_agents(Type,[Ag|Input],Output).
+
+% send a message to all Business agents
+message_businessesA(Worker,Exp) :> all_agents(business,[],Businesses), message_workA(Businesses,Worker,Exp).
+
+% loop the list to send each one the message
+message_workA([],X,Y).
+message_workA([E|L],Worker,Exp) :>
+	messageA(E,send_message(work_available(Worker, Exp),Me)),
+	message_workA(L,Worker,Exp).
+```
+
+## Interest
+Upon offer reception,
+an agent can decide wheter the offer is interesting for them.
+In this case they use the fact in the knowledge base
+to check if it satisfies the minimum requirements:
+```prolog
+min_experience(5).
+
+% External Event: offer received
+work_availableE(Worker, Exp) :> worker_interestA(Worker, Exp).
+
+% The following are the preconditions and the action itself.
+worker_interest(Worker, Exp) :< min_experience(X), X =< Exp.
+worker_interestI(Worker, Exp) :> messageA(broker,send_message(interest(Me, Worker),Me)).
+```
+
+On the other end, the *Broker* will take care of registering the mutual interests:
+```prolog
+:- dynamic interest/2.
+
+interestE(From,To) :> assert(interest(From,To)).
+```
+
+## Match
+Each time a change is made in the KB, the *Broker* will check
+wheter a new *match* has been created.  
+In case of positive result, it will make a new contract
+and it takes care of notify the parts.
+```prolog
+match(A,B) :- interest(A,B), interest(B,A), type(A,worker), type(B,business).
+matchI(A,B) :> messageA(A, send_message(new_contract(B),Me)),       
+    messageA(B, send_message(new_contract(A),Me)),
+	retract(interest(A,B)), retract(interest(B,A)).
+```
+
 
 # Installation
 Installation instructions:
@@ -68,9 +147,7 @@ The project has been implemented and executed on a Linux OS.
 ### Program Execution
 * start the program:  
     `./startmas.sh`
-* in the user window, send the following commands
-in order to wake the agents.
-* ToDo: continue with messages (i.e. go() )
+* use the commands in `commands.txt` in the *active user* window.
 
 ### Exit the program
 * To interrupt the entire execution,
@@ -86,3 +163,4 @@ before restart another round.
 Following some screenshot showing an example of execution.
 
 ToDo: screenshot
+
