@@ -27,11 +27,11 @@ business1.
 user.
 send_message(go,user).
 
-worker1.
+business2.
 user.
 send_message(go,user).
 
-business2.
+worker1.
 user.
 send_message(go,user).
 
@@ -39,4 +39,5 @@ worker2.
 user.
 send_message(go,user).
 
+External event preconditions not verified: no DeltaTime
 

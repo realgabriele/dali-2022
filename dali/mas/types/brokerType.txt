@@ -4,13 +4,6 @@
 all_agents(Type,Input,Input) :- \+ (type(Ag,Type), \+ memberchk(Ag,Input)).
 all_agents(Type,Input,Output) :- type(Ag,Type), \+ memberchk(Ag,Input), !, all_agents(Type,[Ag|Input],Output).
 
-/* ----- */
-
-type(worker1,worker).
-type(worker2,worker).
-type(business1,business).
-type(business2,business).
-
 /* === Events === */
 
 subscribeE(Agent,Type) :> assert(type(Agent,Type)),
@@ -45,7 +38,6 @@ match(A,B) :- interest(A,B), interest(B,A), type(A,worker), type(B,business).
 matchI(A,B) :> write(A), write(' now works with '), write(B), nl,
 	messageA(A, send_message(new_contract(B),Me)), messageA(B, send_message(new_contract(A),Me)),
 	retract(interest(A,B)), retract(interest(B,A)).
-
 
 
 
