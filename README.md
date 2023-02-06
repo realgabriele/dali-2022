@@ -162,5 +162,9 @@ before restart another round.
 # Example
 Following some screenshot showing an example of execution.
 
-ToDo: screenshot
+![screen1](Images/Screenshot1.png)
+
+![screen3](Images/Screenshot3.png)
+
+![screen5](Images/Screenshot5.png)
 
